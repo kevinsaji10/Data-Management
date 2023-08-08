@@ -1,0 +1,17 @@
+# Question h
+
+delimiter $$
+create procedure student_list(in in_cid char(8), in in_sem char(6), in n int)
+
+	begin
+		select sid, final_mark
+        from registration
+        where semester = in_sem and cid = in_cid
+        order by final_mark desc
+        limit n;
+	end$$
+    
+delimiter ;
+
+CALL student_list( 'ISM 3112', 'I-2001', 2);
+drop procedure student_list;

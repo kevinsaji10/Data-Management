@@ -1,0 +1,31 @@
+# Question i
+
+delimiter $$
+create procedure student_list(in in_sem char(6), in in_cid char(8), in in_aid int  )
+	
+	begin
+		declare maxmark decimal(5, 2);
+		if in_aid = -1 then
+        select max(final_mark) into maxmark from registration r 
+		where semester = in_sem and cid = in_cid;
+
+		select sid, final_mark from registration r 
+		where semester = in_sem and cid = in_cid and final_mark = maxmark;
+        
+        else
+		set maxmark = (select max(mark)
+        from registration r, performance p
+        where r.cid = p.cid and r.cid = in_cid and r.semester = in_sem and p.aid = in_aid);
+		
+        select p.sid, mark from performance p, registration r 
+		where r.sid = p.sid and r.cid = p.cid 
+		and semester = in_sem and p.cid = in_cid and p.aid = in_aid
+        and mark = maxmark;
+        end if;
+	end$$
+    
+delimiter ;
+
+CALL student_list( 'I-2001', 'ISM 3112', 2);
+CALL sp_top_student( 'I-2001', 'ISM 3112', -1);
+drop procedure student_list;

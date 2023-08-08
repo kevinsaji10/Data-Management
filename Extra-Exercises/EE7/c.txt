@@ -1,0 +1,15 @@
+# Question c
+delimiter $$
+create trigger after_performance_update after update on Performance for each row
+
+	begin
+		declare newFinalMark decimal(5, 2);
+        call sp_get_SCfinalmarks(new.sid, new,cid, @final);
+        
+        set newFinalMark = (select @final);
+        update registration set final_mark = newFinalMark
+        where sid = new.sid and cid = new.cid;
+        
+	end$$
+    
+delimiter ;

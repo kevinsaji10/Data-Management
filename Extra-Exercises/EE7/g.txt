@@ -1,0 +1,16 @@
+# Question g
+
+delimiter $$
+create procedure get_greater( IN n int)
+
+	begin
+		select q.fid, fname, q.cid, year(curdate()) - year(Date_qualified) as years
+        from qualification q, faculty f 
+        where q.fid = f.fid and (year(curdate()) - year(date_qualified)) > n
+		order by years desc;
+	end$$
+    
+delimiter ;
+
+CALL get_greater(25);
+drop procedure get_greater

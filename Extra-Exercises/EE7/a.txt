@@ -1,0 +1,15 @@
+# Question a
+delimiter $$
+create procedure sp_get_SCfinalmarks( IN studsid int, IN regcid char(8), OUT finalmarks
+decimal(5,2) )
+	begin
+		set finalmarks = (select sum(p.mark * a.weight)
+        from performance p, assessment a
+        where p.aid = a.aid and p.sid = studsid and p.cid = regcid);
+        
+	end$$
+    
+delimiter ;
+    call sp_get_SCfinalmarks(38214, 'ISM 4212',@final);
+    select @final;
+    drop procedure sp_get_SCfinalmarks;

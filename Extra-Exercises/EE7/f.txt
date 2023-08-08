@@ -1,0 +1,16 @@
+# Question f
+delimiter $$
+create trigger before_registration_insert before insert on Registration for each row
+
+	begin
+		declare coursenum int;
+        set coursenum = (select count(*) from registration
+        where sid = new.sid and semester = new.semester);
+        if coursenum >=5 then
+			signal sqlstate '45000' set message_text = 
+              'Trigger Error: Insertion fail, student has already 
+              registered for 5 courses in the semester';
+	    end if;
+	end$$
+    
+delimiter ;

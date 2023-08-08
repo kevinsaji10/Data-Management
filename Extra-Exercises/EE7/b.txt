@@ -1,0 +1,37 @@
+# Question b
+delimiter $$
+create procedure sp_populate_finalmarks()
+	begin
+		declare totalcount int;
+        declare currentcount int;
+        declare offsetvalue int;
+        declare currentsid int;
+        declare currentcid char(8);
+        declare currentfinalmark decimal(5, 2);
+        
+        set offsetvalue = 0;
+        set currentcount = 0;
+        
+        set totalcount = (select count(*)
+        from registration);
+        while(currentcount < totalcount) do
+			set currentsid = (select sid from registration limit 1 offset offsetvalue);
+            set currentcid = (select cid from registration limit 1 offset offsetvalue);
+			call sp_get_SCfinalmarks(currentsid, currentcid, @final);
+            set currentfinalmark = (select @final);
+            update registration
+            set final_mark = currentfinalmark
+            where sid = currentsid and cid = currentcid;
+            set currentcount = currentcount + 1;
+            set offsetvalue = offsetvalue + 1;
+		end while;
+        
+		end$$
+	
+    delimiter ;
+    call sp_populate_finalmarks();
+    drop procedure sp_populate_finalmarks;
+    
+    # to check
+    select *
+    from registration;
